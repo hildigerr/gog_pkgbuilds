@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Beholder
+GenericName=Beholder
+Comment=Manage a dystopian aparment building
+Icon=beholder.png
+Exec=beholder
+Categories=Game;StrategyGame;

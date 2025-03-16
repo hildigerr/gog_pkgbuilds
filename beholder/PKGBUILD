@@ -1,0 +1,37 @@
+# Maintainer: Hildigerr Vergaray <Maintainer at YmirSystems dot com>
+
+pkgname=gog-beholder
+_pkgname="${pkgname#*-}"
+pkgver=2.0.0.1
+pkgrel=2
+pkgdesc="Become the State-installed manager of an apartment building in a grim dystopian future. (GOG version)"
+arch=('x86_64') #TODO: 'i686'
+url="https://www.gog.com/en/game/beholder"
+license=('custom')
+depends=('mesa' 'libxcursor' 'libxrandr')
+options=(!strip)
+source=(
+  "gog_beholder_${pkgver}.sh"
+  "beholder_1.desktop"
+  "beholder.sh"
+)
+md5sums=(
+  'e772ed7e9b18743d7e5686f2208491c4'
+  'f1d1b34c3ee7a100b1797cc096b20d4e'
+  '47a318319e17d15d1706e75f31ae1723'
+)
+
+package() {
+
+  install -Dm755 "${srcdir}/beholder.sh" "${pkgdir}/usr/local/bin/beholder"
+  install -Dm755 "${srcdir}/data/noarch/game/Beholder.x86_64" "${pkgdir}/opt/${_pkgname}/Beholder.x86_64"
+  install -Dm644 "${srcdir}/beholder_1.desktop" "${pkgdir}/usr/share/applications/beholder_1.desktop"
+  install -Dm644 "${srcdir}/data/noarch/support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
+  install -Dm644 "${srcdir}/data/noarch/docs/End User License Agreement.txt" "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
+
+  cd "${srcdir}/data/noarch/game/"
+  find Beholder_Data -type f -printf '%P\0' | xargs -0 -I {} install -Dm644 "Beholder_Data/{}" "${pkgdir}/opt/${_pkgname}/Beholder_Data/{}"
+  rm -rf "${pkgdir}/opt/${_pkgname}/Beholder_Data/Mono/x86"
+  rm -rf "${pkgdir}/opt/${_pkgname}/Beholder_Data/Plugins/x86"
+}
+
