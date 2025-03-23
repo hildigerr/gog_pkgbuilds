@@ -1,0 +1,47 @@
+# Maintainer: Hildigerr Vergaray <Maintainer at YmirSystems dot com>
+
+pkgname=gog-desperados1
+_pkgname="${pkgname#*-}"
+pkgver=1.0.2
+pkgrel=1
+pkgdesc="Desperados: Wanted Dead or Alive (GOG version)"
+arch=('x86_64') #TODO: 'i686'
+url="https://www.gog.com/en/game/desperados_wanted_dead_or_alive"
+license=('custom')
+depends=(
+  'lib32-sdl2' #NOTE: Wont work with lib32-sdl2-compat causes segmentation fault
+)
+
+options=(!strip)
+source=(
+  "desperados_wanted_dead_or_alive_en_1_0_2_thqn_22430.sh"
+  "Desperados_manual.zip"
+  "Desperados_Wanted_Dead_or_Alive.desktop"
+)
+
+sha256sums=(
+  '86d7e1250e7ed37e1dc627ae4ea5a4953cdcf3dcee4209dc617d0a1a427c7386'
+  '9fe9c0ad49bdcebc938016f33170f13ee6f7c1838a22ae216ddb899e4d4707d6'
+  '9a421621995cef9af2caafc848823cd9e4751333a9ea5f4f909c343b6a05f118'
+)
+
+prepare() {
+  sed -i "1i#!/bin/bash\n\ncd \"/opt/${_pkgname}/\"" \
+    "${srcdir}/data/noarch/game/desperados_launcher.sh"
+}
+
+package() {
+  install -Dm755 "${srcdir}/data/noarch/game/desperados_launcher.sh" "${pkgdir}/usr/local/bin/${_pkgname}"
+  install -Dm644 "${srcdir}/data/noarch/game/libdbus-1.so.3" "${pkgdir}/opt/${_pkgname}/libdbus-1.so.3"
+  install -Dm755 "${srcdir}/data/noarch/game/desperados32" "${pkgdir}/opt/${_pkgname}/desperados32"
+  install -Dm644 "${srcdir}/Desperados_Wanted_Dead_or_Alive.desktop" "${pkgdir}/usr/share/applications/Desperados_Wanted_Dead_or_Alive.desktop"
+  install -Dm644 "${srcdir}/data/noarch/support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
+  install -Dm644 "${srcdir}/data/noarch/docs/End User License Agreement.txt" "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
+  install -Dm644 "${srcdir}/Desperados_manual/Desperados_Manual.pdf" "${pkgdir}/opt/${_pkgname}/Desperados_Manual.pdf"
+
+  cd "${srcdir}/data/noarch/game/"
+  for each in bootmenu data demo localisation localisation_demo shaders; do
+    find ${each} -type f -printf '%P\0' | xargs -0 -I {} install -Dm644 "${each}/{}" "${pkgdir}/opt/${_pkgname}/${each}/{}"
+  done
+}
+
