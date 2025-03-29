@@ -3,7 +3,7 @@
 pkgname=gog-desperados1
 _pkgname="${pkgname#*-}"
 pkgver=1.0.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Desperados: Wanted Dead or Alive (GOG version)"
 arch=('x86_64') #TODO: 'i686'
 url="https://www.gog.com/en/game/desperados_wanted_dead_or_alive"
@@ -31,7 +31,7 @@ prepare() {
 }
 
 package() {
-  install -Dm755 "${srcdir}/data/noarch/game/desperados_launcher.sh" "${pkgdir}/usr/local/bin/${_pkgname}"
+  install -Dm755 "${srcdir}/data/noarch/game/desperados_launcher.sh" "${pkgdir}/usr/bin/${_pkgname}"
   install -Dm644 "${srcdir}/data/noarch/game/libdbus-1.so.3" "${pkgdir}/opt/${_pkgname}/libdbus-1.so.3"
   install -Dm755 "${srcdir}/data/noarch/game/desperados32" "${pkgdir}/opt/${_pkgname}/desperados32"
   install -Dm644 "${srcdir}/Desperados_Wanted_Dead_or_Alive.desktop" "${pkgdir}/usr/share/applications/Desperados_Wanted_Dead_or_Alive.desktop"

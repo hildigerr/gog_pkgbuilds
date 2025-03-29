@@ -3,7 +3,7 @@
 pkgname=gog-beholder
 _pkgname="${pkgname#*-}"
 pkgver=2.0.0.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Become the State-installed manager of an apartment building in a grim dystopian future. (GOG version)"
 arch=('x86_64') #TODO: 'i686'
 url="https://www.gog.com/en/game/beholder"
@@ -22,8 +22,7 @@ md5sums=(
 )
 
 package() {
-
-  install -Dm755 "${srcdir}/beholder.sh" "${pkgdir}/usr/local/bin/beholder"
+  install -Dm755 "${srcdir}/beholder.sh" "${pkgdir}/usr/bin/beholder"
   install -Dm755 "${srcdir}/data/noarch/game/Beholder.x86_64" "${pkgdir}/opt/${_pkgname}/Beholder.x86_64"
   install -Dm644 "${srcdir}/beholder_1.desktop" "${pkgdir}/usr/share/applications/beholder_1.desktop"
   install -Dm644 "${srcdir}/data/noarch/support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
