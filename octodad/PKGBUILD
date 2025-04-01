@@ -3,12 +3,12 @@
 pkgname=gog-octodad-deadliest-catch
 _pkgname=octodad-deadliest-catch
 pkgver=2.4.0.7
-pkgrel=1
+pkgrel=2
 pkgdesc="Octodad: Deadliest Catch (GOG version)"
 arch=('x86_64')
 url="https://www.gog.com/en/game/octodad_dadliest_catch"
 license=('custom')
-depends=('lib32-libglvnd' 'lib32-gcc-libs' 'lib32-libx11' 'lib32-libxdmcp')
+depends=('lib32-alsa-plugins' 'lib32-libpulse' 'lib32-libxcursor' 'lib32-mesa')
 backup=()
 options=(!strip)
 source=(
