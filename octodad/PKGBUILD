@@ -1,0 +1,39 @@
+# Maintainer: Hildigerr Vergaray <Maintainer at YmirSystems dot com>
+
+pkgname=gog-octodad-deadliest-catch
+_pkgname=octodad-deadliest-catch
+pkgver=2.4.0.7
+pkgrel=1
+pkgdesc="Octodad: Deadliest Catch (GOG version)"
+arch=('x86_64')
+url="https://www.gog.com/en/game/octodad_dadliest_catch"
+license=('custom')
+depends=('lib32-libglvnd' 'lib32-gcc-libs' 'lib32-libx11' 'lib32-libxdmcp')
+backup=()
+options=(!strip)
+source=(
+  "gog_octodad_dadliest_catch_${pkgver}.sh"
+  "octodad.sh"
+  "Octodad_Dadliest_Catch.desktop"
+)
+sha256sums=(
+  'b7b34870d1d75262278c39e173671704387c665cbba7ea5a86c4949d56bf56b4'
+  '7bbc531f8ec0ad24e27dc0e84ddb56f3fc6e70085c675a79b2676e75f7db2b11'
+  '112eb4a0222bccab94548cdc50009355e29862dc06a7b9f50d3437cb19ac666f'
+)
+
+package() {
+  cd "${srcdir}/data/noarch/"
+  install -Dm644 "support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
+  install -Dm644 "docs/End User License Agreement.txt" "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
+  install -Dm644 "game/libfmodevent-4.44.30.so" "${pkgdir}/opt/octodad/libfmodevent-4.44.30.so"
+  install -Dm644 "game/libfmodevent.so" "${pkgdir}/opt/octodad/libfmodevent.so"
+  install -Dm644 "game/libfmodex-4.44.30.so" "${pkgdir}/opt/octodad/libfmodex-4.44.30.so"
+  install -Dm644 "game/libfmodex.so" "${pkgdir}/opt/octodad/libfmodex.so"
+  install -Dm755 "game/OctodadDadliestCatch" "${pkgdir}/opt/octodad/OctodadDadliestCatch"
+  install -Dm755 "${srcdir}/octodad.sh" "${pkgdir}/usr/bin/octodad"
+  cd game
+  find Content -type f -exec install -Dm644 "{}" "${pkgdir}/opt/octodad/{}" \;
+  install -Dm644 "${srcdir}/Octodad_Dadliest_Catch.desktop" "${pkgdir}/usr/share/applications/Octodad_Dadliest_Catch.desktop"
+}
+
