@@ -1,0 +1,51 @@
+#!/bin/bash
+
+#LD_LIST=$(sudo pldd $1 | tail -n +2)
+
+LOCAL_LIST=""
+CHECK_LIST=""
+CONFR_LIST=""
+
+# for LIB in LD_LIST; do
+while read LIB; do
+  PKG=$(pacman -Qoq "${LIB}" 2>/dev/null)
+
+  if [[ -z "${PKG}" ]]; then
+    #echo "${LIB} is local."
+    LOCAL_LIST="${LOCAL_LIST}${LIB}"$'\n'
+    continue
+  fi
+
+  #echo -n "${PKG} "
+
+  if [[ -n "$(echo "${CHECK_LIST}" | grep -Fx "${PKG}")" ]]; then
+    #echo "is already in checklist."
+    continue
+  fi
+
+  if [[ -n "$(echo "${CONFR_LIST}" | grep -Fx "${PKG}")" ]]; then
+    #echo "is already confirmed."
+    continue
+  fi
+
+  required_by=$(pacman -Qi "$PKG" | grep "Required By" | awk '{print $3}')
+
+  if [[ "$required_by" == "None" ]]; then
+    #echo "confirmed."
+    CONFR_LIST="$CONFR_LIST$PKG"$'\n'
+  else
+    #echo "added to checklist."
+    CHECK_LIST="$CHECK_LIST$PKG"$'\n'
+  fi
+done
+
+echo "Local Libraries:"
+echo "$LOCAL_LIST"
+
+echo "Confirmed Dependencies:"
+echo "$CONFR_LIST"
+
+echo "Dependency Check:"
+echo "$CHECK_LIST"
+
+
