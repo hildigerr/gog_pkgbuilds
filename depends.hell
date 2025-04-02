@@ -6,6 +6,9 @@ LOCAL_LIST=""
 CHECK_LIST=""
 CONFR_LIST=""
 
+declare -A DEPENDS_TABLE
+declare -A REQUIRED_BY_TABLE
+
 # for LIB in LD_LIST; do
 while read LIB; do
   PKG=$(pacman -Qoq "${LIB}" 2>/dev/null)
@@ -28,7 +31,15 @@ while read LIB; do
     continue
   fi
 
-  required_by=$(pacman -Qi "$PKG" | grep "Required By" | awk '{print $3}')
+  package_deets="$(pacman -Qi "${PKG}")"
+  depends_on=$(echo $package_deets | grep -Po 'Depends On\s*:\s*\K.*?(?=\s*Optional Deps)')
+  required_by=$(echo $package_deets | grep -Po 'Required By\s*:\s*\K.*?(?=\s*Optional For)')
+
+  #echo "depends_on: $depends_on"
+  #echo "required_by: $required_by"
+
+  DEPENDS_TABLE["$PKG"]="$depends_on"
+  REQUIRED_BY_TABLE["$PKG"]="$required_by"
 
   if [[ "$required_by" == "None" ]]; then
     #echo "confirmed."
@@ -48,4 +59,12 @@ echo "$CONFR_LIST"
 echo "Dependency Check:"
 echo "$CHECK_LIST"
 
+#echo "Depends Table:"
+#for key in "${!DEPENDS_TABLE[@]}"; do
+#  echo "$key: ${DEPENDS_TABLE[$key]}"
+#done
+#echo "Required By Table:"
+#for key in "${!REQUIRED_BY_TABLE[@]}"; do
+#  echo "$key: ${REQUIRED_BY_TABLE[$key]}"
+#done
 
