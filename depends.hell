@@ -1,6 +1,13 @@
 #!/bin/bash
 
-#LD_LIST=$(sudo pldd $1 | tail -n +2)
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    --pid|-p) LD_LIST=$(sudo pldd $2 | tail -n +2) ;;
+    --file|-f) LD_LIST=$(< $2) ;;
+  esac
+  shift
+done
+
 
 LOCAL_LIST=""
 CHECK_LIST=""
@@ -9,8 +16,7 @@ CONFR_LIST=""
 declare -A DEPENDS_TABLE
 declare -A REQUIRED_BY_TABLE
 
-# for LIB in LD_LIST; do
-while read LIB; do
+for LIB in $LD_LIST; do
   PKG=$(pacman -Qoq "${LIB}" 2>/dev/null)
 
   if [[ -z "${PKG}" ]]; then
@@ -74,21 +80,77 @@ for PKG in "${!REQUIRED_BY_TABLE[@]}"; do
   REQUIRED_BY_TABLE[$PKG]="${filtered_rdeps[*]}"
 done
 
+#echo "=[First Pass]="
 echo "Local Libraries:"
 echo "$LOCAL_LIST"
-
-echo "Confirmed Dependencies:"
-echo "$CONFR_LIST"
-
-echo "Dependency Check:"
-echo "$CHECK_LIST"
-
+#echo "Confirmed Dependencies:"
+#echo "$CONFR_LIST"
+#echo "Dependency Check:"
+#echo "$CHECK_LIST"
 #echo "Depends Table:"
 #for key in "${!DEPENDS_TABLE[@]}"; do
 #  echo "$key: ${DEPENDS_TABLE[$key]}"
 #done
+#echo
 #echo "Required By Table:"
 #for key in "${!REQUIRED_BY_TABLE[@]}"; do
 #  echo "$key: ${REQUIRED_BY_TABLE[$key]}"
 #done
 
+SKIP_LIST=""
+NU_CHECK_LIST=()
+
+# Process CHECK_LIST items
+while IFS= read -r item; do
+  [[ -z "$item" ]] && continue  # Skip empty lines
+  # Check if item has no required_by entries
+  if [[ -z "${REQUIRED_BY_TABLE[$item]}" ]]; then
+    CONFR_LIST+="$item"$'\n'
+    SKIP_LIST="${SKIP_LIST}${DEPENDS_TABLE[$item]}"$'\n'
+  else NU_CHECK_LIST+=("$item")
+  fi
+done <<< "$(echo -e "$CHECK_LIST")"
+
+#echo
+#echo "=[Second Pass]="
+#echo "Confirmed Dependencies:"
+#echo "$CONFR_LIST"
+#echo "Dependency Check:"
+#echo "${NU_CHECK_LIST[@]}"
+#echo
+#echo "Skip List:"
+#echo "$SKIP_LIST"
+
+CHECKLIST_SIZE=${#NU_CHECK_LIST[@]}
+COUNT=0
+
+while [[ ${#NU_CHECK_LIST[@]} -gt 0 ]]; do
+  EACH="${NU_CHECK_LIST[0]}"
+  NU_CHECK_LIST=("${NU_CHECK_LIST[@]:1}")
+
+  if [[ -n "$(echo "${SKIP_LIST}" | grep -F "${EACH}")" ]]; then
+    #echo "${EACH} in skip list. Adding dependencies..."
+    SKIP_LIST="${SKIP_LIST}${DEPENDS_TABLE[$EACH]}"$'\n'
+    COUNT=0
+    continue
+  else
+    ASK='N'
+    COUNT=$((COUNT + 1))
+    if (( COUNT >= CHECKLIST_SIZE )); then
+      read -s -n 1 -p "Confirm dependency ($EACH) [y/N]? " ASK </dev/tty
+    fi
+    if [ "${ASK}" = 'y' ] ; then
+      CONFR_LIST+="$EACH"$'\n'
+      SKIP_LIST="${SKIP_LIST}${DEPENDS_TABLE[$EACH]}"$'\n'
+      COUNT=0
+    else
+      #echo "Keeping ${EACH}"
+      NU_CHECK_LIST+=("${EACH}")
+    fi
+  fi
+done
+
+echo "Confirmed Dependencies:"
+echo "$CONFR_LIST"
+#echo "Dependency Check:"
+#echo "${NU_CHECK_LIST[@]}"
