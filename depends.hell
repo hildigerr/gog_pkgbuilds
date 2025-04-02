@@ -50,6 +50,30 @@ while read LIB; do
   fi
 done
 
+# Filter DEPENDS_TABLE
+for PKG in "${!DEPENDS_TABLE[@]}"; do
+  filtered_deps=()
+  for EACH in ${DEPENDS_TABLE[$PKG]}; do
+    if { echo "$CHECK_LIST" | grep -Fxq "$EACH"; } \
+    || { echo "$CONFR_LIST" | grep -Fxq "$EACH"; }; then
+      filtered_deps+=("$EACH")
+    fi
+  done
+  DEPENDS_TABLE[$PKG]="${filtered_deps[*]}"
+done
+
+# Filter REQUIRED_BY_TABLE
+for PKG in "${!REQUIRED_BY_TABLE[@]}"; do
+  filtered_rdeps=()
+  for EACH in ${REQUIRED_BY_TABLE[$PKG]}; do
+    if { echo "$CHECK_LIST" | grep -Fxq "$EACH"; } \
+    || { echo "$CONFR_LIST" | grep -Fxq "$EACH"; }; then
+      filtered_rdeps+=("$EACH")
+    fi
+  done
+  REQUIRED_BY_TABLE[$PKG]="${filtered_rdeps[*]}"
+done
+
 echo "Local Libraries:"
 echo "$LOCAL_LIST"
 
