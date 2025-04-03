@@ -1,0 +1,50 @@
+# Maintainer: Hildigerr Vergaray <Maintainer at YmirSystems dot com>
+
+pkgname=gog-ziggurat
+_pkgname="${pkgname#*-}"
+pkgver=2.3.0.5
+pkgrel=1
+pkgdesc="A Dungeon-Crawling First Person Shooter (GOG version)"
+arch=('x86_64') #TODO: test 'i686'
+url="https://www.gog.com/en/game/ziggurat"
+license=('custom')
+depends=(
+  glu
+  alsa-plugins
+  libpulse
+  sdl2
+  mesa
+)
+options=(!strip)
+source=(
+  "gog_ziggurat_${pkgver}.sh"
+  "${_pkgname}.desktop"
+  "${_pkgname}.sh"
+)
+sha256sums=(
+  '84608a43590e4befa954bb1bb488bec65d27615902237f139bfa83de80029266'
+  '49d125475335bba65b5c0ff1d84612a8dc3e1baa44a1c5848cc52882c8a7888a'
+  'f4d344bb066b1374a613a4db1eeb733298bd5e676bc3a1310a7579e9f2aa50c9'
+)
+
+package() {
+  install -Dm644 "${srcdir}/${_pkgname}.desktop" "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+  install -Dm755 "${srcdir}/${_pkgname}.sh" "${pkgdir}/usr/bin/${_pkgname}"
+
+  cd "${srcdir}/data/noarch/"
+  install -Dm644 "support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
+  install -Dm644 "docs/End User License Agreement.txt" "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
+
+  cd game
+  if [ "${CARCH}" = 'i686' ] ; then _CHARCH=x86; OARCH='x86_64'; else OARCH='x86'; fi
+  install -Dm755 "Ziggurat.${_CHARCH:-$CARCH}" "${pkgdir}/opt/ziggurat/Ziggurat"
+  find Ziggurat_Data -type f -exec install -Dm655 "{}" "${pkgdir}/opt/ziggurat/{}" \;
+
+  # Cleanup The Other Architecture 
+  rm -rf "${pkgdir}/opt/ziggurat/Ziggurat_Data/Plugins/${OARCH}"
+  rm -rf "${pkgdir}/opt/ziggurat/Ziggurat_Data/Mono/${OARCH}"
+  mv "${pkgdir}/opt/ziggurat/Ziggurat_Data/Plugins/${_CHARCH:-$CARCH}/ScreenSelector.so" \
+     "${pkgdir}/opt/ziggurat/Ziggurat_Data/Plugins/ScreenSelector.so"
+  rmdir "${pkgdir}/opt/ziggurat/Ziggurat_Data/Plugins/${_CHARCH:-$CARCH}/"
+}
+

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Ziggurat
+GenericName=Ziggurat
+Comment=Dungeon-Crawling First Person Shooter
+Icon=ziggurat
+Exec=ziggurat
+Categories=Game;ActionGame;
+
