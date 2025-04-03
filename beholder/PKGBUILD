@@ -3,12 +3,12 @@
 pkgname=gog-beholder
 _pkgname="${pkgname#*-}"
 pkgver=2.0.0.1
-pkgrel=3
+pkgrel=4
 pkgdesc="Become the State-installed manager of an apartment building in a grim dystopian future. (GOG version)"
 arch=('x86_64') #TODO: 'i686'
 url="https://www.gog.com/en/game/beholder"
 license=('custom')
-depends=('mesa' 'libxcursor' 'libxrandr')
+depends=('mesa' 'libpulse' 'libxcursor' 'libxrandr')
 options=(!strip)
 source=(
   "gog_beholder_${pkgver}.sh"

@@ -3,13 +3,15 @@
 pkgname=gog-desperados1
 _pkgname="${pkgname#*-}"
 pkgver=1.0.2
-pkgrel=2
+pkgrel=3
 pkgdesc="Desperados: Wanted Dead or Alive (GOG version)"
 arch=('x86_64') #TODO: 'i686'
 url="https://www.gog.com/en/game/desperados_wanted_dead_or_alive"
 license=('custom')
 depends=(
   'lib32-sdl2' #NOTE: Wont work with lib32-sdl2-compat causes segmentation fault
+  'lib32-libpulse'
+  'lib32-mesa'
 )
 
 options=(!strip)
