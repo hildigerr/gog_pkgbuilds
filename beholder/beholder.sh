@@ -12,9 +12,7 @@
 #
 
 # Determine Where User Config Files Should Go
-if [ -z "${XDG_CONFIG_HOME}" ]; then
-  XDG_CONFIG_HOME="${HOME}/.config"
-fi
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
 echo "XDG_CONFIG_HOME is \"${XDG_CONFIG_HOME}\""
 
 # Create User Config Home (Should be Unnecessary)
@@ -24,9 +22,7 @@ if [ ! -d "${XDG_CONFIG_HOME}" ]; then
 fi
 
 # Determine Where User Cache Should Go
-if [ -z "${XDG_CACHE_HOME}" ]; then
-  XDG_CACHE_HOME="${HOME}/.cache"
-fi
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
 echo "XDG_CACHE_HOME is \"${XDG_CACHE_HOME}\""
 
 # Create User Cache Home (Should be Unnecessary)
@@ -36,9 +32,7 @@ if [ ! -d "${XDG_CACHE_HOME}" ]; then
 fi
 
 # Determine Where User Data Files Should Go
-if [ -z "${XDG_DATA_HOME}" ]; then
-  XDG_DATA_HOME="${HOME}/.local/share"
-fi
+XDG_DATA_HOME=${XDG_DATA_HOME:-${HOME}/.local/share}
 echo "XDG_DATA_HOME is \"${XDG_DATA_HOME}\""
 
 # Create User Data Home (Should be Unnecessary)

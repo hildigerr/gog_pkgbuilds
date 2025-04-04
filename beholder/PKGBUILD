@@ -3,7 +3,7 @@
 pkgname=gog-beholder
 _pkgname="${pkgname#*-}"
 pkgver=2.0.0.1
-pkgrel=4
+pkgrel=5
 pkgdesc="Become the State-installed manager of an apartment building in a grim dystopian future. (GOG version)"
 arch=('x86_64') #TODO: 'i686'
 url="https://www.gog.com/en/game/beholder"
@@ -18,7 +18,7 @@ source=(
 md5sums=(
   'e772ed7e9b18743d7e5686f2208491c4'
   'f1d1b34c3ee7a100b1797cc096b20d4e'
-  '47a318319e17d15d1706e75f31ae1723'
+  'c75d6ce7c04bfdcc2c104521ce5c6c71'
 )
 
 package() {
