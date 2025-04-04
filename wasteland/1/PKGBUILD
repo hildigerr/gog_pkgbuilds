@@ -1,0 +1,70 @@
+# Maintainer: Hildigerr Vergaray <Maintainer at YmirSystems dot com>
+
+pkgname=gog-wasteland1
+_pkgname="${pkgname#*-}"
+pkgver=2.0.0.3
+pkgrel=1
+pkgdesc="Classic post-apocalyptic RPG. (GOG version)"
+arch=('x86_64') #TODO: 'i686'
+url="https://www.gog.com/en/game/wasteland_the_classic_original"
+license=('custom')
+depends=(
+  'lib32-zlib' 'lib32-libxext' # Both of which are required by 'lib32-mesa'
+  'lib32-libxcursor'
+  'lib32-libpulse'
+)
+makedepends=('pandoc' 'texlive-latex' 'texlive-fontsrecommended' 'texlive-latexrecommended')
+options=(!strip)
+source=(
+  "gog_wasteland_1_the_original_classic_${pkgver}.sh"
+  "wasteland_manual.zip"
+  "wasteland_paragraphs.zip"
+  "wasteland_reference_card.zip"
+  "wasteland_survival_guide.zip"
+  "${_pkgname}.sh"
+  "wasteland_1.desktop"
+  "https://static.wikia.nocookie.net/wasteland/images/e/ef/Main_map.png"
+)
+sha256sums=(
+  '68cbdaa910ed24b3ff81a3fc696496d2b7552d1ed79e88aaf80929b394c4ca8b'
+  'ef095fb4bd41ca5aa3b7948de2e3a515accf391b1006337215ced0e10e55b319'
+  '5ba294e0eb422db3b6288196d0fb24bcd2e3312f8fe7c6c04d7a99adb0593f31'
+  '72886f734daff7adf13a28d037ab29d000af845273e2438227ddb5f88ddd57ad'
+  'd80d9d8bed52fb1b30455b5e440aad6fb74351c995d7d5e29261614f7ca880d0'
+  'aaa5c935b8f68b384e9c2bfae73b335f4b9ec348b012ba230f661bee1dcb3cdd'
+  '4a300c5e3aaffdcf6c17421e646712a2e78fb17dbb45397440fadf43e27616b7'
+  '4e4ba4ea0d7795de58c09e21b23b2c9869ce6f85acacd5f6f63d320ce50c2c1a'
+)
+
+build() {
+  cd "${srcdir}/data/noarch/game/"
+  pandoc "SOFTWARE LICENSE AGREEMENT.docx" -o "wasteland_1_software_license_agreement.pdf"
+}
+
+package() {
+  cd "${srcdir}/data/noarch/"
+  install -Dm755 "${srcdir}/${_pkgname}.sh" "${pkgdir}/usr/bin/${_pkgname}"
+  install -Dm755 "game/wasteland" "${pkgdir}/opt/${_pkgname}/wasteland"
+  install -Dm644 "game/wl.default.conf" "${pkgdir}/opt/${_pkgname}/wl.default.conf"
+  install -Dm644 "game/wasteland_1_software_license_agreement.pdf" \
+    "${pkgdir}/usr/share/licenses/gog/wasteland_1_software_license_agreement.pdf"
+  install -Dm644 "support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
+  install -Dm644 "${srcdir}/wasteland_1.desktop" "${pkgdir}/usr/share/applications/wasteland_1.desktop"
+  for each in cursors legal paragraphs portraits splash; do
+    install -Dm644 "game/${each}.bin" "${pkgdir}/opt/${_pkgname}/${each}.bin"
+  done
+  cd game
+  for each in music portraits rom vo; do
+    find "$each" -type f -exec install -Dm644 "{}" "${pkgdir}/opt/${_pkgname}/{}" \;
+  done
+  install -Dm644 "${srcdir}/wasteland_manual/Wasteland - Manual.pdf" \
+    "${pkgdir}/usr/share/doc/${_pkgname}/Wasteland - Manual.pdf"
+  install -Dm644 "${srcdir}/wasteland_paragraphs/Wasteland - Paragraphs.pdf" \
+    "${pkgdir}/usr/share/doc/${_pkgname}/Wasteland - Paragraphs.pdf"
+  install -Dm644 "${srcdir}/wasteland_reference_card/Wasteland - Reference Card.pdf" \
+    "${pkgdir}/usr/share/doc/${_pkgname}/Wasteland - Reference Card.pdf"
+  install -Dm644 "${srcdir}/wasteland_survival_guide/Wasteland Survival Guide.pdf" \
+    "${pkgdir}/usr/share/doc/${_pkgname}/Wasteland - Survival Guide.pdf"
+  install -Dm644 "${srcdir}/Main_map.png" "${pkgdir}/usr/share/doc/${_pkgname}/Main_map.png"
+}
+
