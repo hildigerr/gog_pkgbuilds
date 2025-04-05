@@ -3,6 +3,7 @@ Type=Application
 Name=Wasteland 1
 Comment=Wasteland 1 The Original Classic post-apocalyptic RPG
 Icon=wasteland1
-Exec=wasteland1
+Exec=xdg-launch --cd /opt/wasteland1/ /opt/wasteland1/wasteland
+Path=/opt/wasteland1/
 Categories=Game;RolePlaying;
 
