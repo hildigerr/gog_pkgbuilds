@@ -1,0 +1,63 @@
+# Maintainer: Hildigerr Vergaray <Maintainer at YmirSystems dot com>
+
+_pkgname=escapists
+pkgname=('gog-escapists' 'gog-escapists-editor')
+pkgver=1.37.37742
+pkgrel=1
+pkgdesc="Escape from prison in The Esapists. (GOG version)"
+arch=('x86_64') #TODO: i686
+url="https://www.gog.com/en/game/the_escapists"
+license=('custom')
+depends=(
+  'sdl2'
+  'openal' 'libxi' 'libxrandr' # Each of which are required by 'allegro'
+  'libxss'
+  'pipewire-audio'
+  'mesa'
+  'xdg-launcher'
+)
+options=(!strip)
+source=(
+  "${_pkgname}.desktop"
+  "the_escapists_1_37_37742.sh"
+)
+sha256sums=(
+  '49b941c952c51f3cd939f6b4393dc818bc6b70e54029ba31871fbbeec613f73b'
+  'a764004bb7bae97c69657b04736b4a025e137e73a2db44d9c89309181c02fe94'
+)
+
+build() {
+  cat << EOF > "${srcdir}/${_pkgname}-editor"
+#!/bin/sh
+xdg-launch --cd "/opt/escapists/Map Editor" --fuzz "/opt/escapists/Map Editor/Chowdren"
+EOF
+}
+
+package_gog-escapists() {
+  cd "${srcdir}/data/noarch/game"
+  install -Dm644 "${srcdir}/data/noarch/support/icon.png" \
+    "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
+  install -Dm644 "${srcdir}/${_pkgname}.desktop" \
+    "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+  install -Dm644 "${srcdir}/data/noarch/docs/End User License Agreement.txt" \
+    "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
+  install -Dm755 "bin64/Chowdren" "${pkgdir}/opt/${_pkgname}/Chowdren"
+  find Data -type f -exec install -Dm644 "{}" "${pkgdir}/opt/${_pkgname}/{}" \;
+  find Music -type f -exec install -Dm644 "{}" "${pkgdir}/opt/${_pkgname}/{}" \;
+  install -Dm644 Assets.dat "${pkgdir}/opt/${_pkgname}/Assets.dat"
+}
+
+package_gog-escapists-editor() {
+  depends+=(package_gog-${_pkgname})
+  cd "${srcdir}/data/noarch/game"
+  install -Dm755 "Map Editor/bin64/Chowdren" \
+    "${pkgdir}/opt/${_pkgname}/Map Editor/Chowdren"
+  install -Dm644 "Map Editor/bin64/libsteam_api.so" \
+    "${pkgdir}/opt/${_pkgname}/Map Editor/libsteam_api.so"
+  find "Map Editor/data" -type f -exec \
+    install -Dm644 "{}" "${pkgdir}/opt/${_pkgname}/{}" \;
+  install -Dm644 "Map Editor/Assets.dat" \
+    "${pkgdir}/opt/${_pkgname}/Map Editor/Assets.dat"
+  install -Dm755 "${srcdir}/${_pkgname}-editor" \
+    "${pkgdir}/usr/bin/${_pkgname}-editor"
+}

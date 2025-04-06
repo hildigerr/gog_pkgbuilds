@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=The Escapists
+Comment=Escape from prison!
+Icon=escapists
+Exec=xdg-launch --cd /opt/escapists --fuzz /opt/escapists/Chowdren
+Path=/opt/escapists
+Categories=Game;StrategyGame;
+
