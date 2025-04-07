@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=SteamWorld Heist
+Comment=A tactical, turned based, free aiming game.
+Icon=steamworld-heist
+Path=/opt/steamworld/heist
+Exec=/opt/steamworld/heist/Heist
+Categories=Game;StrategyGame;

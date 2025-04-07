@@ -1,0 +1,41 @@
+# Maintainer: Hildigerr Vergaray <Maintainer at YmirSystems dot com>
+
+pkgname=gog-steamworld-heist
+pkgver=2.1.26995
+pkgrel=2
+pkgdesc="Command a steam-driven pirate crew in a series of epic tactical shootouts. (GOG version)"
+arch=('x86_64')
+url="https://www.gog.com/en/game/steamworld_heist"
+license=('custom')
+depends=('lib32-openal' 'lib32-libxcursor' 'lib32-libpulse' 'lib32-mesa')
+makedepends=('imagemagick')
+options=(!strip)
+source=(
+  "steamworld.heist.desktop"
+  "steamworld_heist_2_1_26995.sh"
+)
+sha256sums=(
+  '5b7d5e05a881d2130109edbdda1996ef21c77d3659033a17c319ef03ac655e32'
+  '07879e6d782eaa2d6dfad0c7d7fa21f6accacdfb7125a2d688c45e707d0ae4d5'
+)
+
+build() {
+  cd "${srcdir}/data/noarch/"
+  for each in game/Licenses/* ; do
+    echo "============ $(basename "$each"):" >> "docs/End User License Agreement.txt"
+    cat "$each" >> "docs/End User License Agreement.txt"
+  done
+  magick convert "game/icon.bmp" "game/icon.png"
+}
+
+package() {
+  cd "${srcdir}/data/noarch/game"
+  install -Dm644 "${srcdir}/steamworld.heist.desktop" "${pkgdir}/usr/share/applications/steamworld.heist.desktop"
+  install -Dm644 icon.png "${pkgdir}/usr/share/icons/hicolor/48x48/apps/steamworld-heist.png"
+  install -Dm755 Heist "${pkgdir}/opt/steamworld/heist/Heist"
+  find Bundle -type f -exec install -Dm644 "{}" "${pkgdir}/opt/steamworld/heist/{}" \;
+  install -Dm644 "${srcdir}/data/noarch/docs/End User License Agreement.txt" \
+    "${pkgdir}/usr/share/licenses/gog/steamworld-heist.eula"
+  install -Dm644 readme.txt "${pkgdir}/usr/share/doc/steamworld/heist-readme.txt"
+}
+
