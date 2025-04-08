@@ -138,6 +138,7 @@ while [[ ${#NU_CHECK_LIST[@]} -gt 0 ]]; do
     COUNT=$((COUNT + 1))
     if (( COUNT >= CHECKLIST_SIZE )); then
       read -s -n 1 -p "Confirm dependency ($EACH) [y/N]? " ASK </dev/tty
+      echo
     fi
     if [ "${ASK}" = 'y' ] ; then
       CONFR_LIST+="$EACH"$'\n'
