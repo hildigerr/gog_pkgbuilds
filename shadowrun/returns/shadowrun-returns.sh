@@ -11,8 +11,7 @@ while [ "$#" -gt 0 ]; do
   case $1 in
     --editor|-e)
       if [ -e "$XPATH/ShadowrunEditor" ]; then
-        export XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/Shadowrun"
-        LAUNCH="xdg-launch ./ShadowrunEditor --"
+        LAUNCH=./ShadowrunEditor
       else
         echo "Error: The Shadowrun Returns Editor is not installed."
         exit 1
@@ -22,6 +21,6 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-cd "$XPATH"
-$LAUNCH "${argv[@]}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/Shadowrun"
+xdg-launch --cd "$XPATH" $LAUNCH -- "${argv[@]}"
 

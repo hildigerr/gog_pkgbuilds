@@ -3,7 +3,7 @@
 pkgname=(gog-shadowrun-returns gog-shadowrun-returns-editor)
 _pkgname=shadowrun-returns
 pkgver=2.0.0.7
-pkgrel=1
+pkgrel=2
 pkgdesc="Shadowrun Returns (GOG version)"
 arch=('x86_64')
 url="https://www.gog.com/en/game/shadowrun_returns"
@@ -14,6 +14,7 @@ depends=(
   lib32-alsa-plugins
   lib32-libpulse
   lib32-mesa
+  xdg-launcher
 )
 options=(!strip)
 source=(
@@ -23,7 +24,7 @@ source=(
 )
 sha256sums=(
   '94030db95ee681224033bce3cc00d7ea61b10ff00a93e1d29c2459a35bd45121'
-  '0890252fd2a6312f03e78efbf82eebe82a8708fdda6470e780b75ee8d42a7f9c'
+  '42a5f075fb5c623493546f07dd0a8fb6d7b29549b5d9b5a0fafcc347e4ab4d7a'
   '37a6de999ff394893673296f0bb2a037d2c45053b0f95362f7880aaeab6249c2'
 )
 
@@ -32,6 +33,7 @@ build() {
 }
 
 package_gog-shadowrun-returns() {
+  optdepends=('gog-shadowrun-returns-editor: to launch content editor')
   cd "${srcdir}/data/noarch"
   install -Dm644 "docs/End User License Agreement.txt" "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
   install -Dm644 "support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
@@ -49,7 +51,6 @@ package_gog-shadowrun-returns-editor() {
     'lib32-libsm'
     'lib32-libxt'
     'lib32-qt4'
-    'xdg-launcher'
   )
   install -Dm755 "${srcdir}/data/noarch/game/ShadowrunEditor" "${pkgdir}/opt/shadowrun/returns/ShadowrunEditor"
 }
