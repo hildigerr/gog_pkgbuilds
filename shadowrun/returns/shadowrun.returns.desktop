@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Shadowrun Returns
+Comment=Shadowrun Returns
+Icon=shadowrun-returns
+Exec=shadowrun-returns
+Categories=Game;RolePlaying;
+Path=/opt/shadowrun/returns/

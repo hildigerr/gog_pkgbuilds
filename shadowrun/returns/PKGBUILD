@@ -1,0 +1,80 @@
+# Maintainer: Hildigerr Vergaray <Maintainer at YmirSystems dot com>
+
+pkgname=(gog-shadowrun-returns gog-shadowrun-returns-editor)
+_pkgname=shadowrun-returns
+pkgver=2.0.0.7
+pkgrel=1
+pkgdesc="Shadowrun Returns (GOG version)"
+arch=('x86_64')
+url="https://www.gog.com/en/game/shadowrun_returns"
+license=('custom')
+depends=(
+  lib32-glu
+  lib32-libxcursor
+  lib32-alsa-plugins
+  lib32-libpulse
+  lib32-mesa
+)
+options=(!strip)
+source=(
+  "gog_shadowrun_returns_${pkgver}.sh"
+  "shadowrun-returns.sh"
+  "shadowrun.returns.desktop"
+  #XXX: Unable to find and/or build via aur but needed for editor: 
+  "http://ftp.us.debian.org/debian/pool/main/n/nas/libaudio2_1.9.4-7_i386.deb" # Probably could build this with linux32 chroot
+  "https://security.debian.org/debian-security/pool/updates/main/q/qt4-x11/libqt4-network_4.8.7+dfsg-18+deb10u2_i386.deb"
+  "https://security.debian.org/debian-security/pool/updates/main/q/qt4-x11/libqtcore4_4.8.7+dfsg-18+deb10u2_i386.deb"
+  "https://security.debian.org/debian-security/pool/updates/main/q/qt4-x11/libqtgui4_4.8.7+dfsg-18+deb10u2_i386.deb"
+)
+sha256sums=(
+  '94030db95ee681224033bce3cc00d7ea61b10ff00a93e1d29c2459a35bd45121'
+  ''
+  ''
+  ''
+  '3a65a3ab3d8b2be2e705481c61a330d60c36dcfd643518a7c778f15c4d6e16da' # https://packages.debian.org/bookworm/i386/libaudio2/download
+  'ebee17275d026d96571503047a2422bedb743fe25a7c8ec750a5d8a43fb49755' # https://packages.debian.org/buster/i386/libqt4-network/download
+  '8db5754f5c77fc029557d00eedc4120662bed51b225fea747a584d89558aee68' # https://packages.debian.org/buster/i386/libqtcore4/download
+  ''
+)
+
+build() {
+  tail -n 12 "${srcdir}/data/noarch/game/Shadowrun.sh" >> "${srcdir}shadowrun-returns.sh"
+}
+
+package_gog-shadowrun-returns() {
+  cd "${srcdir}/data/noarch"
+  install -Dm644 "docs/End User License Agreement.txt" "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
+  install -Dm644 "support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
+  cd game
+  install -Dm755 Shadowrun "${pkgdir}/opt/shadowrun/returns/Shadowrun"
+  find Shadowrun_Data -type f -exec install -Dm644 "{}" "${pkgdir}/opt/shadowrun/returns/{}" \;
+  install -Dm755 "${srcdir}/shadowrun-returns.sh" "${pkgdir}/usr/bin/shadowrun-returns"
+  install -Dm644 "${srcdir}/shadowrun.returns.desktop" "${pkgdir}/usr/share/applications/shadowrun.returns.desktop"
+}
+
+package_gog-shadowrun-returns-editor() {
+  depends=(
+    'gog-shadowrun-returns'
+    'lib32-fontconfig'
+    'lib32-libsm'
+    'lib32-libxt'
+    #XXX: Also these. Unable to find and/or build, so retrieved from deb packages:
+    #libQtGui.so.4, libQtNetwork.so.4, libQtCore.so.4
+    #libaudio.so.2 : 'lib32-nas' (https://aur.archlinux.org/packages/nas)
+  )
+  install -Dm644 "${srcdir}/libaudio2/data/usr/lib/i386-linux-gnu/libaudio.so.2.4" \
+    "${pkgdir}/opt/shadowrun/returns/lib32/libaudio.so.2.4"
+  ln -s /opt/shadowrun/returns/lib32/libaudio.so.2.4 "${pkgdir}/opt/shadowrun/returns/lib32/libaudio.so.2"
+  install -Dm644 "${srcdir}/libqt4-network/data/usr/lib/i386-linux-gnu/libQtNetwork.so.4.8.7" \
+    "${pkgdir}/opt/shadowrun/returns/lib32/libQtNetwork.so.4.8.7"
+  ln -s /opt/shadowrun/returns/lib32/libQtNetwork.so.4.8.7 "${pkgdir}/opt/shadowrun/returns/lib32/libQtNetwork.so.4"
+  install -Dm644 "${srcdir}/libqtcore4/data/usr/lib/i386-linux-gnu/libQtCore.so.4.8.7" \
+    "${pkgdir}/opt/shadowrun/returns/lib32/libQtCore.so.4.8.7"
+  ln -s /opt/shadowrun/returns/lib32/libQtCore.so.4.8.7 "${pkgdir}/opt/shadowrun/returns/lib32/libQtCore.so.4"
+  install -Dm644 "${srcdir}/libqtgui4/data/usr/lib/i386-linux-gnu/libQtGui.so.4.8.7" \
+    "${pkgdir}/opt/shadowrun/returns/lib32/libQtGui.so.4.8.7"
+  ln -s /opt/shadowrun/returns/lib32/libQtGui.so.4.8.7 "${pkgdir}/opt/shadowrun/returns/lib32/libQtGui.so.4"
+
+  install -Dm755 "${srcdir}/data/noarch/game/ShadowrunEditor" "${pkgdir}/opt/shadowrun/returns/ShadowrunEditor"
+}
+
