@@ -3,7 +3,7 @@
 pkgname=(gog-shadowrun-returns gog-shadowrun-returns-editor)
 _pkgname=shadowrun-returns
 pkgver=2.0.0.7
-pkgrel=2
+pkgrel=3
 pkgdesc="Shadowrun Returns (GOG version)"
 arch=('x86_64')
 url="https://www.gog.com/en/game/shadowrun_returns"
@@ -41,7 +41,7 @@ package_gog-shadowrun-returns() {
   install -Dm755 Shadowrun "${pkgdir}/opt/shadowrun/returns/Shadowrun"
   find Shadowrun_Data -type f -exec install -Dm644 "{}" "${pkgdir}/opt/shadowrun/returns/{}" \;
   install -Dm755 "${srcdir}/shadowrun-returns.sh" "${pkgdir}/usr/bin/shadowrun-returns"
-  install -Dm644 "${srcdir}/shadowrun.returns.desktop" "${pkgdir}/usr/share/applications/shadowrun.returns.desktop"
+  install -Dm644 "${srcdir}/shadowrun.returns.desktop" "${pkgdir}/usr/share/applications/com.gog.shadowrun.returns.desktop"
 }
 
 package_gog-shadowrun-returns-editor() {

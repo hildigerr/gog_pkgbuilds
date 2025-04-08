@@ -3,7 +3,7 @@
 _pkgname=escapists
 pkgname=('gog-escapists' 'gog-escapists-editor')
 pkgver=1.37.37742
-pkgrel=1
+pkgrel=2
 pkgdesc="Escape from prison in The Esapists. (GOG version)"
 arch=('x86_64') #TODO: i686
 url="https://www.gog.com/en/game/the_escapists"
@@ -38,7 +38,7 @@ package_gog-escapists() {
   install -Dm644 "${srcdir}/data/noarch/support/icon.png" \
     "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
   install -Dm644 "${srcdir}/${_pkgname}.desktop" \
-    "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+    "${pkgdir}/usr/share/applications/com.gog.${_pkgname}.desktop"
   install -Dm644 "${srcdir}/data/noarch/docs/End User License Agreement.txt" \
     "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
   install -Dm755 "bin64/Chowdren" "${pkgdir}/opt/${_pkgname}/Chowdren"

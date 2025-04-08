@@ -2,7 +2,7 @@
 
 pkgname=gog-steamworld-heist
 pkgver=2.1.26995
-pkgrel=3
+pkgrel=4
 pkgdesc="Command a steam-driven pirate crew in a series of epic tactical shootouts. (GOG version)"
 arch=('x86_64')
 url="https://www.gog.com/en/game/steamworld_heist"
@@ -30,7 +30,7 @@ build() {
 
 package() {
   cd "${srcdir}/data/noarch/game"
-  install -Dm644 "${srcdir}/steamworld.heist.desktop" "${pkgdir}/usr/share/applications/steamworld.heist.desktop"
+  install -Dm644 "${srcdir}/steamworld.heist.desktop" "${pkgdir}/usr/share/applications/com.gog.steamworld.heist.desktop"
   install -Dm644 "${srcdir}/data/noarch/support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/steamworld-heist.png"
   install -Dm644 icon.png "${pkgdir}/usr/share/icons/hicolor/48x48/apps/steamworld-heist.png"
   install -Dm755 Heist "${pkgdir}/opt/steamworld/heist/Heist"

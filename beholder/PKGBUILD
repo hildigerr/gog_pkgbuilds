@@ -3,7 +3,7 @@
 pkgname=gog-beholder
 _pkgname="${pkgname#*-}"
 pkgver=2.0.0.1
-pkgrel=6
+pkgrel=7
 pkgdesc="Become the State-installed manager of an apartment building in a grim dystopian future. (GOG version)"
 arch=('x86_64') #TODO: 'i686'
 url="https://www.gog.com/en/game/beholder"
@@ -21,12 +21,12 @@ md5sums=(
 
 package() {
   install -Dm755 "${srcdir}/data/noarch/game/Beholder.x86_64" "${pkgdir}/opt/${_pkgname}/Beholder.x86_64"
-  install -Dm644 "${srcdir}/beholder_1.desktop" "${pkgdir}/usr/share/applications/beholder_1.desktop"
+  install -Dm644 "${srcdir}/beholder_1.desktop" "${pkgdir}/usr/share/applications/com.gog.beholder_1.desktop"
   install -Dm644 "${srcdir}/data/noarch/support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
   install -Dm644 "${srcdir}/data/noarch/docs/End User License Agreement.txt" "${pkgdir}/usr/share/licenses/gog/${_pkgname}.eula"
 
   cd "${srcdir}/data/noarch/game/"
-  find Beholder_Data -type f -printf '%P\0' | xargs -0 -I {} install -Dm644 "Beholder_Data/{}" "${pkgdir}/opt/${_pkgname}/Beholder_Data/{}"
+  find Beholder_Data -type f -exec install -Dm644 "{}" "${pkgdir}/opt/${_pkgname}/{}" \;
   rm -rf "${pkgdir}/opt/${_pkgname}/Beholder_Data/Mono/x86"
   rm -rf "${pkgdir}/opt/${_pkgname}/Beholder_Data/Plugins/x86"
 }

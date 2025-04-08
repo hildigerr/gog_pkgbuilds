@@ -3,7 +3,7 @@
 pkgname=gog-wasteland1
 _pkgname="${pkgname#*-}"
 pkgver=2.0.0.3
-pkgrel=2
+pkgrel=3
 pkgdesc="Classic post-apocalyptic RPG. (GOG version)"
 arch=('x86_64') #TODO: 'i686'
 url="https://www.gog.com/en/game/wasteland_the_classic_original"
@@ -47,7 +47,7 @@ package() {
   install -Dm644 "game/wasteland_1_software_license_agreement.pdf" \
     "${pkgdir}/usr/share/licenses/gog/wasteland_1_software_license_agreement.pdf"
   install -Dm644 "support/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/${_pkgname}.png"
-  install -Dm644 "${srcdir}/wasteland_1.desktop" "${pkgdir}/usr/share/applications/wasteland_1.desktop"
+  install -Dm644 "${srcdir}/wasteland_1.desktop" "${pkgdir}/usr/share/applications/com.gog.wasteland_1.desktop"
   for each in cursors legal paragraphs portraits splash; do
     install -Dm644 "game/${each}.bin" "${pkgdir}/opt/${_pkgname}/${each}.bin"
   done

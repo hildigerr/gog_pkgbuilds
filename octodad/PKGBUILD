@@ -3,7 +3,7 @@
 pkgname=gog-octodad-deadliest-catch
 _pkgname=octodad-deadliest-catch
 pkgver=2.4.0.7
-pkgrel=2
+pkgrel=3
 pkgdesc="Octodad: Deadliest Catch (GOG version)"
 arch=('x86_64')
 url="https://www.gog.com/en/game/octodad_dadliest_catch"
@@ -34,6 +34,7 @@ package() {
   install -Dm755 "${srcdir}/octodad.sh" "${pkgdir}/usr/bin/octodad"
   cd game
   find Content -type f -exec install -Dm644 "{}" "${pkgdir}/opt/octodad/{}" \;
-  install -Dm644 "${srcdir}/Octodad_Dadliest_Catch.desktop" "${pkgdir}/usr/share/applications/Octodad_Dadliest_Catch.desktop"
+  install -Dm644 "${srcdir}/Octodad_Dadliest_Catch.desktop" \
+    "${pkgdir}/usr/share/applications/com.gog.Octodad.Dadliest_Catch.desktop"
 }
 
